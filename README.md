@@ -4,7 +4,7 @@
 
 This is a Model Context Protocol (MCP) server that provides access to stock market data from [Financial Datasets](https://www.financialdatasets.ai/). 
 
-It allows Claude and other AI assistants to retrieve financial information like income statements, balance sheets, cash flow statements, and stock prices directly through the MCP interface.
+It allows Claude and other AI assistants to retrieve income statements, balance sheets, cash flow statements, stock prices, and market news directly through the MCP interface.
 
 ## Available Tools
 
