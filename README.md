@@ -27,7 +27,7 @@ This MCP server provides the following tools:
 1. Clone this repository:
    ```bash
    git clone https://github.com/financial-datasets/mcp-server
-   cd financial-datasets-mcp
+   cd mcp-server
    ```
 
 2. If you don't have uv installed, install it:
