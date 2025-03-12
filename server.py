@@ -1,7 +1,17 @@
 import json
 import os
 import httpx
+import logging
+import sys
 from mcp.server.fastmcp import FastMCP
+
+# Configure logging to write to stderr
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    stream=sys.stderr
+)
+logger = logging.getLogger("financial-datasets-mcp")
 
 # Initialize FastMCP server
 mcp = FastMCP("financial-datasets")
@@ -190,5 +200,11 @@ async def get_news(ticker: str) -> str:
 
 
 if __name__ == "__main__":
+    # Log server startup
+    logger.info("Starting Financial Datasets MCP Server...")
+    
     # Initialize and run the server
     mcp.run(transport="stdio")
+    
+    # This line won't be reached during normal operation
+    logger.info("Server stopped")

@@ -8,11 +8,12 @@ This is a Model Context Protocol (MCP) server that provides access to financial 
 
 This MCP server provides the following tools:
 
-- **get_income_statements**: Retrieve income statements for a company by ticker symbol
-- **get_balance_sheets**: Retrieve balance sheets for a company by ticker symbol
-- **get_cash_flow_statements**: Retrieve cash flow statements for a company by ticker symbol
+- **get_income_statements**: Retrieve income statements for a stock
+- **get_balance_sheets**: Retrieve balance sheets for stock
+- **get_cash_flow_statements**: Retrieve cash flow statements for a stock
 - **get_current_price**: Get the latest price information for a stock
 - **get_prices**: Get historical stock prices with customizable date ranges and intervals
+- **get_news**: Get the latest news for a stock
 
 ## Setup
 
