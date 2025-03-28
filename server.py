@@ -9,7 +9,7 @@ from mcp.server.fastmcp import FastMCP
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    stream=sys.stderr
+    stream=sys.stderr,
 )
 logger = logging.getLogger("financial-datasets-mcp")
 
@@ -37,14 +37,20 @@ async def make_request(url: str) -> dict[str, any] | None:
 
 
 @mcp.tool()
-async def get_income_statements(ticker: str) -> str:
+async def get_income_statements(
+    ticker: str,
+    period: str = "annual",
+    limit: int = 4,
+) -> str:
     """Get income statements for a company.
 
     Args:
         ticker: Ticker symbol of the company (e.g. AAPL, GOOGL)
+        period: Period of the income statement (e.g. annual, quarterly, ttm)
+        limit: Number of income statements to return (default: 4)
     """
     # Fetch data from the API
-    url = f"{FINANCIAL_DATASETS_API_BASE}/income-statements/{ticker}"
+    url = f"{FINANCIAL_DATASETS_API_BASE}/income-statements/{ticker}?period={period}&limit={limit}"
     data = await make_request(url)
 
     # Check if data is found
@@ -63,14 +69,20 @@ async def get_income_statements(ticker: str) -> str:
 
 
 @mcp.tool()
-async def get_balance_sheets(ticker: str) -> str:
+async def get_balance_sheets(
+    ticker: str,
+    period: str = "annual",
+    limit: int = 4,
+) -> str:
     """Get balance sheets for a company.
 
     Args:
         ticker: Ticker symbol of the company (e.g. AAPL, GOOGL)
+        period: Period of the balance sheet (e.g. annual, quarterly, ttm)
+        limit: Number of balance sheets to return (default: 4)
     """
     # Fetch data from the API
-    url = f"{FINANCIAL_DATASETS_API_BASE}/balance-sheets/{ticker}"
+    url = f"{FINANCIAL_DATASETS_API_BASE}/balance-sheets/{ticker}?period={period}&limit={limit}"
     data = await make_request(url)
 
     # Check if data is found
@@ -89,14 +101,20 @@ async def get_balance_sheets(ticker: str) -> str:
 
 
 @mcp.tool()
-async def get_cash_flow_statements(ticker: str) -> str:
+async def get_cash_flow_statements(
+    ticker: str,
+    period: str = "annual",
+    limit: int = 4,
+) -> str:
     """Get cash flow statements for a company.
 
     Args:
         ticker: Ticker symbol of the company (e.g. AAPL, GOOGL)
+        period: Period of the cash flow statement (e.g. annual, quarterly, ttm)
+        limit: Number of cash flow statements to return (default: 4)
     """
     # Fetch data from the API
-    url = f"{FINANCIAL_DATASETS_API_BASE}/cash-flow-statements/{ticker}"
+    url = f"{FINANCIAL_DATASETS_API_BASE}/cash-flow-statements/{ticker}?period={period}&limit={limit}"
     data = await make_request(url)
 
     # Check if data is found
@@ -115,7 +133,7 @@ async def get_cash_flow_statements(ticker: str) -> str:
 
 
 @mcp.tool()
-async def get_current_price(ticker: str) -> str:
+async def get_current_stock_price(ticker: str) -> str:
     """Get the current / latest price of a company.
 
     Args:
@@ -141,7 +159,7 @@ async def get_current_price(ticker: str) -> str:
 
 
 @mcp.tool()
-async def get_prices(
+async def get_historical_stock_prices(
     ticker: str,
     start_date: str,
     end_date: str,
@@ -177,7 +195,7 @@ async def get_prices(
 
 
 @mcp.tool()
-async def get_news(ticker: str) -> str:
+async def get_company_news(ticker: str) -> str:
     """Get news for a company.
 
     Args:
@@ -199,12 +217,124 @@ async def get_news(ticker: str) -> str:
         return "Unable to fetch news or no news found."
 
 
+@mcp.tool()
+async def get_available_crypto_tickers() -> str:
+    """
+    Gets all available crypto tickers.
+    """
+    # Fetch data from the API
+    url = f"{FINANCIAL_DATASETS_API_BASE}/crypto/prices/tickers"
+    data = await make_request(url)
+
+    # Check if data is found
+    if not data:
+        return "Unable to fetch available crypto tickers or no available crypto tickers found."
+
+    # Extract the available crypto tickers
+    tickers = data.get("tickers", [])
+
+    # Stringify the available crypto tickers
+    return json.dumps(tickers, indent=2)
+
+
+@mcp.tool()
+async def get_crypto_prices(
+    ticker: str,
+    start_date: str,
+    end_date: str,
+    interval: str = "day",
+    interval_multiplier: int = 1,
+) -> str:
+    """
+    Gets historical prices for a crypto currency.
+    """
+    # Fetch data from the API
+    url = f"{FINANCIAL_DATASETS_API_BASE}/crypto/prices/?ticker={ticker}&interval={interval}&interval_multiplier={interval_multiplier}&start_date={start_date}&end_date={end_date}"
+    data = await make_request(url)
+
+    # Check if data is found
+    if not data:
+        return "Unable to fetch prices or no prices found."
+
+    # Extract the prices
+    prices = data.get("prices", [])
+
+    # Check if prices are found
+    if not prices:
+        return "Unable to fetch prices or no prices found."
+
+    # Stringify the prices
+    return json.dumps(prices, indent=2)
+
+
+@mcp.tool()
+async def get_historical_crypto_prices(
+    ticker: str,
+    start_date: str,
+    end_date: str,
+    interval: str = "day",
+    interval_multiplier: int = 1,
+) -> str:
+    """Gets historical prices for a crypto currency.
+
+    Args:
+        ticker: Ticker symbol of the crypto currency (e.g. BTC-USD). The list of available crypto tickers can be retrieved via the get_available_crypto_tickers tool.
+        start_date: Start date of the price data (e.g. 2020-01-01)
+        end_date: End date of the price data (e.g. 2020-12-31)
+        interval: Interval of the price data (e.g. minute, hour, day, week, month)
+        interval_multiplier: Multiplier of the interval (e.g. 1, 2, 3)
+    """
+    # Fetch data from the API
+    url = f"{FINANCIAL_DATASETS_API_BASE}/crypto/prices/?ticker={ticker}&interval={interval}&interval_multiplier={interval_multiplier}&start_date={start_date}&end_date={end_date}"
+    data = await make_request(url)
+
+    # Check if data is found
+    if not data:
+        return "Unable to fetch prices or no prices found."
+
+    # Extract the prices
+    prices = data.get("prices", [])
+
+    # Check if prices are found
+    if not prices:
+        return "Unable to fetch prices or no prices found."
+
+    # Stringify the prices
+    return json.dumps(prices, indent=2)
+
+
+@mcp.tool()
+async def get_current_crypto_price(ticker: str) -> str:
+    """Get the current / latest price of a crypto currency.
+
+    Args:
+        ticker: Ticker symbol of the crypto currency (e.g. BTC-USD). The list of available crypto tickers can be retrieved via the get_available_crypto_tickers tool.
+    """
+    # Fetch data from the API
+    url = f"{FINANCIAL_DATASETS_API_BASE}/crypto/prices/snapshot/?ticker={ticker}"
+    data = await make_request(url)
+
+    # Check if data is found
+    if not data:
+        return "Unable to fetch current price or no current price found."
+
+    # Extract the current price
+    snapshot = data.get("snapshot", {})
+
+    # Check if current price is found
+    if not snapshot:
+        return "Unable to fetch current price or no current price found."
+
+    # Stringify the current price
+    return json.dumps(snapshot, indent=2)
+
+
 if __name__ == "__main__":
     # Log server startup
     logger.info("Starting Financial Datasets MCP Server...")
-    
+
     # Initialize and run the server
     mcp.run(transport="stdio")
-    
+
     # This line won't be reached during normal operation
     logger.info("Server stopped")
