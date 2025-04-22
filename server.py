@@ -50,7 +50,7 @@ async def get_income_statements(
         limit: Number of income statements to return (default: 4)
     """
     # Fetch data from the API
-    url = f"{FINANCIAL_DATASETS_API_BASE}/income-statements/{ticker}?period={period}&limit={limit}"
+    url = f"{FINANCIAL_DATASETS_API_BASE}/financials/income-statements/?ticker={ticker}&period={period}&limit={limit}"
     data = await make_request(url)
 
     # Check if data is found
@@ -82,7 +82,7 @@ async def get_balance_sheets(
         limit: Number of balance sheets to return (default: 4)
     """
     # Fetch data from the API
-    url = f"{FINANCIAL_DATASETS_API_BASE}/balance-sheets/{ticker}?period={period}&limit={limit}"
+    url = f"{FINANCIAL_DATASETS_API_BASE}/financials/balance-sheets/?ticker={ticker}&period={period}&limit={limit}"
     data = await make_request(url)
 
     # Check if data is found
@@ -114,7 +114,7 @@ async def get_cash_flow_statements(
         limit: Number of cash flow statements to return (default: 4)
     """
     # Fetch data from the API
-    url = f"{FINANCIAL_DATASETS_API_BASE}/cash-flow-statements/{ticker}?period={period}&limit={limit}"
+    url = f"{FINANCIAL_DATASETS_API_BASE}/financials/cash-flow-statements/?ticker={ticker}&period={period}&limit={limit}"
     data = await make_request(url)
 
     # Check if data is found
