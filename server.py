@@ -4,6 +4,7 @@ import httpx
 import logging
 import sys
 from mcp.server.fastmcp import FastMCP
+from dotenv import load_dotenv
 
 # Configure logging to write to stderr
 logging.basicConfig(
@@ -23,6 +24,9 @@ FINANCIAL_DATASETS_API_BASE = "https://api.financialdatasets.ai"
 # Helper function to make API requests
 async def make_request(url: str) -> dict[str, any] | None:
     """Make a request to the Financial Datasets API with proper error handling."""
+    # Load environment variables from .env file
+    load_dotenv()
+    
     headers = {}
     if api_key := os.environ.get("FINANCIAL_DATASETS_API_KEY"):
         headers["X-API-KEY"] = api_key
@@ -329,6 +333,37 @@ async def get_current_crypto_price(ticker: str) -> str:
     # Stringify the current price
     return json.dumps(snapshot, indent=2)
 
+
+@mcp.tool()
+async def get_sec_filings(
+    ticker: str,
+    limit: int = 10,
+    filing_type: str | None = None,
+) -> str:
+    """Get all SEC filings for a company.
+
+    Args:
+        ticker: Ticker symbol of the company (e.g. AAPL, GOOGL)
+        limit: Number of SEC filings to return (default: 10)
+        filing_type: Type of SEC filing (e.g. 10-K, 10-Q, 8-K)
+    """
+    # Fetch data from the API
+    url = f"{FINANCIAL_DATASETS_API_BASE}/filings/?ticker={ticker}&limit={limit}"
+    if filing_type:
+        url += f"&filing_type={filing_type}"
+ 
+    # Call the API
+    data = await make_request(url)
+
+    # Extract the SEC filings
+    filings = data.get("filings", [])
+
+    # Check if SEC filings are found
+    if not filings:
+        return f"Unable to fetch SEC filings or no SEC filings found."
+
+    # Stringify the SEC filings
+    return json.dumps(filings, indent=2)
 
 if __name__ == "__main__":
     # Log server startup
