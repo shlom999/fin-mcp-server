@@ -365,7 +365,7 @@ async def get_sec_filings(
     # Stringify the SEC filings
     return json.dumps(filings, indent=2)
 
-if __name__ == "__main__":
+def main():
     # Log server startup
     logger.info("Starting Financial Datasets MCP Server...")
 
@@ -374,3 +374,7 @@ if __name__ == "__main__":
 
     # This line won't be reached during normal operation
     logger.info("Server stopped")
+
+if __name__ == "__main__":
+    main()
+
